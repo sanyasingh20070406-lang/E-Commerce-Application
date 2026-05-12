@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop - E-Commerce Mini Store</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
+</head>
+<nav>
+    <a href="index.html" class="logo-wrapper">
+        <img src="Images/logo.jpg">
+        <span class="logo-text">BuyMore</span>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+        <i class="fa fa-times" onclick="hideMenu()"></i>
+
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a class="active" href="shop.html">Shop</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="contact.html">Contact</a></li>
+
+            <!-- ✅ SINGLE CORRECT CART -->
+            <li>
+                <a href="#" id="view-cart-btn">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span id="cart-count">0</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" id="user-profile-btn" style="display:none;">
+                    <i class="fa fa-user-circle"></i>
+                    <span id="user-name-display"></span>
+                </a>
+            </li>
+            <li>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <i class="fa fa-bars" onclick="showMenu()"></i>
+</nav>
+
+<!-- PAGE HEADER -->
+<section id="page-header">
+    <div class="back-home-btn">
+        <a href="index.html"><i class="fa fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <h2>#stayhome</h2>
+    <p>Save more with coupons & up to 70% off!</p>
+</section>
+
+<!-- FILTER AND SORT BAR -->
+<section id="filter-sort-bar">
+    <div class="filter-controls">
+        <label for="category-filter">Category:</label>
+        <select id="category-filter">
+            <option value="all">All Products</option>
+            <option value="clothes">Clothes</option>
+            <option value="shoes">Shoes</option>
+            <option value="electronics">Electronics</option>
+        </select>
+    </div>
+    <div class="filter-controls">
+        <label for="brand-filter">Filter by Brand:</label>
+        <select id="brand-filter">
+            <option value="all">All Brands</option>
+            <option value="Adidas">Adidas</option>
+            <option value="Apple">Apple</option>
+            <option value="Aurelia">Aurelia</option>
+            <option value="Boat">Boat</option>
+            <option value="MSI">MSI</option>
+        </select>
+    </div>
+    <div class="sort-controls">
+        <label for="price-sort">Sort by:</label>
+        <select id="price-sort">
+            <option value="default">Featured</option>
+            <option value="low-to-high">Price: Low to High</option>
+            <option value="high-to-low">Price: High to Low</option>
+            <option value="a-to-z">Name: A to Z</option>
+        </select>
+    </div>
+</section>
+
+<!-- PRODUCTS ONLY -->
+<section id="product1">
+
+    <div class="pro-container">
+
+        <div class="pro">
+            <img src="Images/new.webp">
+            <div class="des">
+                <span>Adidas</span>
+                <h5>Checked T-Shirt</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$578</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <input type="number" class="item-qty" value="0" min="0" max="10" readonly>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/j2.jpeg">
+            <div class="des">
+                <span>Boat</span>
+                <h5>Headphones</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Guaranteed</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+
+                </div>
+
+                <h4>$637</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/j3.2.webp">
+            <div class="des">
+                <span>Apple</span>
+                <h5>Smart Phone</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>REDMI A7 Pro </span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>(Black, 64 GB)</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>4 GB RAM</span></div>
+                </div>
+
+                <h4>$1600</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/pa.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Pant</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$21.36</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+        <div class="pro">
+            <img src="Images/earbuds.webp">
+            <div class="des">
+                <span>Boat</span>
+                <h5>Earbuds</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-battery-full"
+                            style="color:#667eea;"></i> <span>Long Battery Life</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-music"
+                            style="color:#667eea;"></i> <span>Immersive Sound</span></div>
+                </div>
+
+                <h4>$637</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/boatw.jpeg">
+            <div class="des">
+                <span>Boat</span>
+                <h5>BOAT Smart Watch</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-heartbeat"
+                            style="color:#667eea;"></i> <span>Health Tracking</span></div>
+                </div>
+
+                <h4>$637</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/images (3).jpeg">
+            <div class="des">
+                <span>Boat</span>
+                <h5>Battery Saver</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-bolt"
+                            style="color:#667eea;"></i> <span>Fast Charging</span></div>
+                </div>
+
+                <h4>$637</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/bluetooth speaker.jpeg">
+            <div class="des">
+                <span>Boat</span>
+                <h5>Bluetooth Speaker</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-volume-up"
+                            style="color:#667eea;"></i> <span>Deep Bass</span></div>
+                </div>
+
+                <h4>$637</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/y.jpg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Sports Shoes</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$95</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/shoe.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Shoes</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$70</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/fr.webp">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Dress</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$120</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/RoyalBlue.webp">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>RoyalBlue Shirt</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$24</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/white.webp">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Tshirt</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$12.5</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/ty.jpg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Pants</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$40</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/off.webp">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Office Pant</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$240</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/kurti.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Kurti</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$20</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/shirt.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Shirt</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>100% Premium Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-palette"
+                            style="color:#667eea;"></i> <span>Multicolor Available</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-ruler"
+                            style="color:#667eea;"></i> <span>Sizes: S, M, L, XL</span></div>
+                </div>
+
+                <h4>$100</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+        <div class="pro">
+            <img src="Images/Bags.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Bags</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>Premium Leather</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-gem"
+                            style="color:#667eea;"></i> <span>Designer Quality</span></div>
+                </div>
+
+                <h4>$20</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+        <div class="pro">
+            <img src="Images/Googles.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Goggles</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-sun"
+                            style="color:#667eea;"></i> <span>100% UV Protection</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>Anti-Scratch Lens</span></div>
+                </div>
+
+                <h4>$20</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+        <div class="pro">
+            <img src="Images/Perfumes.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Perfumes</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-wind"
+                            style="color:#667eea;"></i> <span>Long-lasting Fragrance</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>Premium Scent</span></div>
+                </div>
+
+                <h4>$20</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+        <div class="pro">
+            <img src="Images/Kids Toys.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Kids Toys</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-shield-alt"
+                            style="color:#667eea;"></i> <span>Non-Toxic Material</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-check-circle"
+                            style="color:#667eea;"></i> <span>Safe for Children</span></div>
+                </div>
+
+                <h4>$20</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+        <div class="pro">
+            <img src="Images/SmartPhones.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>SmartPhones</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-microchip"
+                            style="color:#667eea;"></i> <span>High Performance</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-camera"
+                            style="color:#667eea;"></i> <span>High-Res Camera</span></div>
+                </div>
+
+                <h4>$20</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+        <div class="pro">
+            <img src="Images/Watches.jpeg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Watches</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-tint"
+                            style="color:#667eea;"></i> <span>Water Resistant</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-clock"
+                            style="color:#667eea;"></i> <span>Premium Build</span></div>
+                </div>
+
+                <h4>$20</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+        <div class="pro">
+            <img src="Images/tie.jpg">
+            <div class="des">
+                <span>Aurelia</span>
+                <h5>Tie</h5>
+
+                <div class="clothing-details" style="font-size: 12px; color: #777; margin: 8px 0; line-height: 1.5;">
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-tint"
+                            style="color:#667eea;"></i> <span>Cotton</span></div>
+                    <div style="display:flex; align-items:center; gap:6px;"><i class="fa fa-clock"
+                            style="color:#667eea;"></i> <span>Premium Build</span></div>
+                </div>
+
+                <h4>$10</h4>
+            </div>
+            <div class="cart-controls">
+                <button class="cart-btn minus" disabled>-</button>
+                <span class="item-qty">0</span>
+                <button class="cart-btn plus">+</button>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+<!-- TEXT BANNER SECTION -->
+<section id="text-banner">
+    <div class="text-content">
+
+    </div>
+</section>
+
+<!-- CUSTOMER FEEDBACK SECTION -->
+<section id="feedback">
+    <h2>What Our Customers Say</h2>
+    <p class="feedback-subtitle">Real Reviews from Happy Customers</p>
+
+    <div class="feedback-container">
+        <div class="feedback-card">
+            <div class="stars">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+            </div>
+            <p class="feedback-text">"Amazing quality and fast delivery! The clothing is exactly as described. I'll
+                definitely be ordering again. Highly recommended!"</p>
+            <div class="feedback-author">
+                <h5>Sarah Johnson</h5>
+                <p>Verified Buyer</p>
+            </div>
+        </div>
+
+        <div class="feedback-card">
+            <div class="stars">
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+                <i class="fa fa-star"></i>
+            </div>
+            <p class="feedback-text">"Best online shopping experience I've had! The customer service is excellent and
+                the prices are unbeatable. Love the new collections!"</p>
+            <div class="feedback-author">
+                <h5>Michael Chen</h5>
+                <p>Verified Buyer</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+<!-- NEWSLETTER -->
+<section id="newsletter">
+    <div class="newstext">
+        <h4>Sign up for newsletter</h4>
+        <p>Get updates on our latest shop and <span>offers</span>.</p>
+    </div>
+
+    <div class="form">
+        <input type="email" placeholder="Your email address">
+        <button class="normal">Sign Up</button>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+
+    <div class="col">
+        <img src="Images/logo.jpg">
+        <h4>Contact</h4>
+        <div class="contact-info">
+            <p><i class="fas fa-map-marker-alt"></i> 123 Shopping Street, Commerce City, CC 12345</p>
+            <p><i class="fas fa-phone"></i> +1 (800) 123-4567</p>
+            <p><i class="fas fa-envelope"></i> support@ecommerce.com</p>
+        </div>
+    </div>
+
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+    </div>
+
+    <div class="col">
+        <h4>Download App</h4>
+        <a href="https://play.google.com/store/search?q=BuyMore+clothing&c=apps" target="_blank"
+            class="play-store-link">
+            <i class="fab fa-google-play"></i> Get on Google Play
+        </a>
+        <p style="font-size: 12px; margin-top: 10px;">Available for Android devices</p>
+    </div>
+
+    <div class="col">
+        <h4>Payment Methods</h4>
+        <div class="payment-methods">
+            <span class="payment-card visa">
+                <i class="fab fa-cc-visa"></i> Visa
+            </span>
+            <span class="payment-card mastercard">
+                <i class="fab fa-cc-mastercard"></i> MasterCard
+            </span>
+        </div>
+        <p style="font-size: 12px; margin-top: 10px;">Secure payments accepted</p>
+    </div>
+
+    <p class="copyright">© 2026 E-Commerce Mini Store</p>
+
+</footer>
+<div id="product-modal" class="modal">
+    <div class="modal-content">
+        <span id="close">&times;</span>
+        <img id="modal-img">
+        <h3 id="modal-name"></h3>
+        <h4 id="modal-price"></h4>
+    </div>
+</div>
+
+<!-- CART SUMMARY DRAWER -->
+<div id="cart-modal" class="cart-modal hidden">
+    <div class="cart-modal-content">
+        <span id="cart-close" class="cart-close">&times;</span>
+        <h3>Shopping Cart</h3>
+        <div id="cart-items"></div>
+        <div id="checkout-address-section" style="display: none; margin-top: 15px;">
+            <h4>Select Shipping Address</h4>
+            <select id="checkout-address-select"></select>
+            <p class="checkout-help">Add or update delivery details from your profile before checkout.</p>
+        </div>
+        <div class="checkout-payment-section">
+            <h4>Payment Method</h4>
+            <select id="payment-method">
+                <option value="cod">Cash on Delivery</option>
+                <option value="card">Credit / Debit Card</option>
+                <option value="upi">UPI</option>
+            </select>
+        </div>
+        <div class="cart-footer">
+            <strong>Total: $<span id="cart-total">0</span></strong>
+            <button id="checkout-btn" class="checkout-btn">Checkout</button>
+        </div>
+    </div>
+</div>
+
+<!-- FLOATING CHECKOUT BUTTON -->
+<div id="floating-checkout" class="floating-checkout hidden">
+    <button id="floating-checkout-btn">
+        <i class="fa fa-shopping-cart"></i> Checkout (<span id="floating-count">0</span>)
+    </button>
+</div>
+
+<!-- SIGN UP MODAL -->
+<div id="signup-modal" class="signup-modal">
+    <div class="signup-modal-content">
+        <span id="signup-close" class="signup-close">&times;</span>
+        <h2>Sign Up to Shop</h2>
+        <p>Create an account to add items to your cart and checkout</p>
+
+        <form id="signup-form">
+            <input type="text" id="user-name" placeholder="Full Name" required>
+            <input type="email" id="user-email" placeholder="Email Address" required>
+            <input type="password" id="user-password" placeholder="Password" required>
+            <button type="submit" class="signup-btn">Sign Up</button>
+        </form>
+
+        <div class="or-divider">OR</div>
+
+        <button type="button" id="google-signin-btn" class="google-btn">
+            <i class="fa fa-google"></i> Sign up with Google
+        </button>
+
+        <p class="login-text">Already have an account? <a href="#" id="login-link">Sign In</a></p>
+    </div>
+</div>
+
+<!-- LOGIN MODAL -->
+<div id="login-modal" class="signup-modal">
+    <div class="signup-modal-content">
+        <span id="login-close" class="signup-close">&times;</span>
+        <h2>Sign In</h2>
+        <p>Sign in to your account to continue shopping</p>
+
+        <form id="login-form">
+            <input type="email" id="login-email" placeholder="Email Address" required>
+            <input type="password" id="login-password" placeholder="Password" required>
+            <button type="submit" class="signup-btn">Sign In</button>
+        </form>
+
+        <div class="or-divider">OR</div>
+
+        <button type="button" id="google-login-btn" class="google-btn">
+            <i class="fa fa-google"></i> Sign in with Google
+        </button>
+
+        <p class="login-text">Don't have an account? <a href="#" id="signup-link">Sign Up</a></p>
+    </div>
+</div>
+
+<script>
+    var navLinks = document.getElementById("navLinks");
+
+    function showMenu() {
+        navLinks.style.right = "0";
+    }
+
+    function hideMenu() {
+        navLinks.style.right = "-260px";
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="main.js"></script>
+</body>
+
+</html>

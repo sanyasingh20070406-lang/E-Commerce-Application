@@ -1,0 +1,166 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>About - E-Commerce Mini Store</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <a href="index.html" class="logo-wrapper">
+        <img src="Images/logo.jpg">
+        <span class="logo-text">BuyMore</span>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+        <i class="fa fa-times" onclick="hideMenu()"></i>
+
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="shop.html">SHOP</a></li>
+            <li><a href="about.html">ABOUT</a></li>
+            <li><a href="contact.html">CONTACT</a></li>
+            <li>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <i class="fa fa-bars" onclick="showMenu()"></i>
+</nav>
+
+<!-- PAGE HEADER -->
+<section id="page-header">
+    <div class="back-home-btn">
+        <a href="index.html"><i class="fa fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <h2>About Us</h2>
+    <p>Learn more about our store and mission</p>
+</section>
+
+<!-- ABOUT CONTENT -->
+<section class="about-content">
+    <div class="about-container">
+        <h2>Welcome to E-Commerce Mini Store</h2>
+        <p>
+            We are dedicated to providing the best shopping experience with premium products at affordable prices. 
+            Our mission is to make quality merchandise accessible to everyone.
+        </p>
+        
+        <h3>Our Mission</h3>
+        <p>
+            To deliver exceptional products and outstanding customer service, ensuring every customer leaves satisfied 
+            with their shopping experience.
+        </p>
+
+        <h3>Why Choose Us?</h3>
+        <ul class="about-list">
+            <li><strong>Quality Products:</strong> Carefully curated selection from trusted brands</li>
+            <li><strong>Best Prices:</strong> Competitive pricing with regular discounts and offers</li>
+            <li><strong>Fast Shipping:</strong> Quick and reliable delivery to your doorstep</li>
+            <li><strong>24/7 Support:</strong> Always here to help with your queries and concerns</li>
+            <li><strong>Secure Checkout:</strong> Safe and secure payment options</li>
+        </ul>
+
+        <h3>Our Values</h3>
+        <p>
+            We believe in integrity, quality, and customer satisfaction. Every product we offer is tested and verified 
+            to meet our high standards. Your trust is our most valuable asset.
+        </p>
+        
+        <h3 style="margin-top: 30px;">Experience Our Quality</h3>
+        <p>Watch how we ensure the best fabric and stitching quality for every clothing piece.</p>
+        <div style="margin-top: 20px; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.1);">
+            <video width="100%" autoplay loop muted playsinline style="display: block;">
+                <!-- IMPORTANT: Please place your video file at 'Images/clothing_quality.mp4' -->
+                <source src="Images/clothing_quality.mp4" type="video/mp4">
+                Your browser does not support the HTML5 video tag.
+            </video>
+        </div>
+
+        <!-- COMPANY STATISTICS -->
+        <div class="stats-banner">
+            <div class="stat-item">
+                <h2>10k+</h2>
+                <p>Happy Customers</p>
+            </div>
+            <div class="stat-item">
+                <h2>500+</h2>
+                <p>Premium Products</p>
+            </div>
+            <div class="stat-item">
+                <h2>24/7</h2>
+                <p>Global Support</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="col">
+        <img src="Images/logo.jpg">
+        <h4>Contact</h4>
+        <div class="contact-info">
+            <p><i class="fas fa-map-marker-alt"></i> 123 Shopping Street, Commerce City, CC 12345</p>
+            <p><i class="fas fa-phone"></i> +1 (800) 123-4567</p>
+            <p><i class="fas fa-envelope"></i> support@ecommerce.com</p>
+        </div>
+    </div>
+
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+    </div>
+
+    <div class="col">
+        <h4>Download App</h4>
+        <a href="https://play.google.com/store/search?q=BuyMore+clothing&c=apps" target="_blank"
+            class="play-store-link">
+            <i class="fab fa-google-play"></i> Get on Google Play
+        </a>
+        <p style="font-size: 12px; margin-top: 10px;">Available for Android devices</p>
+    </div>
+
+    <div class="col">
+        <h4>Payment Methods</h4>
+        <div class="payment-methods">
+            <span class="payment-card visa">
+                <i class="fab fa-cc-visa"></i> Visa
+            </span>
+            <span class="payment-card mastercard">
+                <i class="fab fa-cc-mastercard"></i> MasterCard
+            </span>
+        </div>
+        <p style="font-size: 12px; margin-top: 10px;">Secure payments accepted</p>
+    </div>
+
+    <p class="copyright">� 2026 E-Commerce Mini Store</p>
+</footer>
+
+<script>
+var navLinks = document.getElementById("navLinks");
+
+function showMenu(){
+    navLinks.style.right = "0";
+}
+
+function hideMenu(){
+    navLinks.style.right = "-200px";
+}
+</script>
+
+</body>
+</html>
+

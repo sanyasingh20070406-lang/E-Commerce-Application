@@ -1,0 +1,178 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contact - E-Commerce Mini Store</title>
+
+<link rel="stylesheet" href="style.css">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.6.0/css/all.min.css">
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<nav>
+    <a href="index.html" class="logo-wrapper">
+        <img src="Images/logo.jpg">
+        <span class="logo-text">BuyMore</span>
+    </a>
+
+    <div class="nav-links" id="navLinks">
+        <i class="fa fa-times" onclick="hideMenu()"></i>
+
+        <ul>
+            <li><a href="index.html">HOME</a></li>
+            <li><a href="shop.html">SHOP</a></li>
+            <li><a href="about.html">ABOUT</a></li>
+            <li><a href="contact.html">CONTACT</a></li>
+            <li>
+                <button class="theme-toggle" onclick="toggleTheme()">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+
+    <i class="fa fa-bars" onclick="showMenu()"></i>
+</nav>
+
+<!-- PAGE HEADER -->
+<section id="page-header">
+    <div class="back-home-btn">
+        <a href="index.html"><i class="fa fa-arrow-left"></i> Back to Home</a>
+    </div>
+    <h2>Contact Us</h2>
+    <p>We'd love to hear from you</p>
+</section>
+
+<!-- CONTACT CONTENT -->
+<section class="contact-content">
+    <!-- GOOGLE MAPS -->
+    <div class="map-container">
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d193595.15830869428!2d-74.11976397304603!3d40.69766374874431!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s" width="100%" height="400" style="border:0; display:block;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+    </div>
+
+    <div class="contact-container">
+        <div class="contact-info">
+            <h3>Get In Touch</h3>
+            <p>Have questions? We're here to help! Reach out to us using any of the methods below.</p>
+
+            <div class="contact-details">
+                <div class="contact-item">
+                    <h4><i class="fa fa-map-marker"></i> Address</h4>
+                    <p>123 Shopping Street<br>City, State 12345<br>Country</p>
+                </div>
+
+                <div class="contact-item">
+                    <h4><i class="fa fa-phone"></i> Phone</h4>
+                    <p>+1 (555) 123-4567<br>Mon - Fri: 9AM - 6PM</p>
+                </div>
+
+                <div class="contact-item">
+                    <h4><i class="fa fa-envelope"></i> Email</h4>
+                    <p>support@ecommerce-store.com<br>info@ecommerce-store.com</p>
+                </div>
+
+                <div class="contact-item">
+                    <h4><i class="fa fa-clock"></i> Hours</h4>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM<br>Saturday: 10:00 AM - 4:00 PM<br>Sunday: Closed</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-form-wrapper">
+            <h3>Send us a Message</h3>
+            <form class="contact-form">
+                <input type="text" placeholder="Your Name" required>
+                <input type="email" placeholder="Your Email" required>
+                <input type="text" placeholder="Subject" required>
+                <textarea placeholder="Your Message" rows="5" required></textarea>
+                <button type="submit" class="normal">Send Message</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- FAQ SECTION -->
+    <div class="faq-section">
+        <h3>Frequently Asked Questions</h3>
+        <div class="faq-grid">
+            <div class="faq-card">
+                <h4>Do you offer international shipping?</h4>
+                <p>Yes! We deliver our products globally. Shipping times and fees may vary depending on your location.</p>
+            </div>
+            <div class="faq-card pink">
+                <h4>What is your return policy?</h4>
+                <p>You can return any unworn, unwashed item within 30 days of purchase for a full refund or exchange.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="col">
+        <img src="Images/logo.jpg">
+        <h4>Contact</h4>
+        <div class="contact-info">
+            <p><i class="fas fa-map-marker-alt"></i> 123 Shopping Street, Commerce City, CC 12345</p>
+            <p><i class="fas fa-phone"></i> +1 (800) 123-4567</p>
+            <p><i class="fas fa-envelope"></i> support@ecommerce.com</p>
+        </div>
+    </div>
+
+    <div class="col">
+        <h4>About</h4>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms</a>
+    </div>
+
+    <div class="col">
+        <h4>Download App</h4>
+        <a href="https://play.google.com/store/search?q=BuyMore+clothing&c=apps" target="_blank"
+            class="play-store-link">
+            <i class="fab fa-google-play"></i> Get on Google Play
+        </a>
+        <p style="font-size: 12px; margin-top: 10px;">Available for Android devices</p>
+    </div>
+
+    <div class="col">
+        <h4>Payment Methods</h4>
+        <div class="payment-methods">
+            <span class="payment-card visa">
+                <i class="fab fa-cc-visa"></i> Visa
+            </span>
+            <span class="payment-card mastercard">
+                <i class="fab fa-cc-mastercard"></i> MasterCard
+            </span>
+        </div>
+        <p style="font-size: 12px; margin-top: 10px;">Secure payments accepted</p>
+    </div>
+
+    <p class="copyright">� 2026 E-Commerce Mini Store</p>
+</footer>
+
+<script>
+var navLinks = document.getElementById("navLinks");
+
+function showMenu(){
+    navLinks.style.right = "0";
+}
+
+function hideMenu(){
+    navLinks.style.right = "-200px";
+}
+
+// Form submission
+document.querySelector(".contact-form").addEventListener("submit", function(e){
+    e.preventDefault();
+    alert("Thank you for your message! We'll get back to you soon.");
+    this.reset();
+});
+</script>
+
+</body>
+</html>
+
