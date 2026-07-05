@@ -19,7 +19,8 @@ import stripe
 
 
 BASE_DIR = Path(__file__).resolve().parent
-DB_PATH = BASE_DIR / "ecommerce.db"
+DB_PATH = Path(os.getenv("DB_PATH", str(BASE_DIR / "ecommerce.db")))
+ALLOWED_ORIGINS = [origin.strip() for origin in os.getenv("ALLOWED_ORIGINS", "*").split(",") if origin.strip()]
 
 
 def load_env_file() -> None:
@@ -43,7 +44,7 @@ load_env_file()
 app = FastAPI(title="BuyMore FastAPI Backend", version="1.0.0")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=ALLOWED_ORIGINS if ALLOWED_ORIGINS != ["*"] else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -56,12 +57,6 @@ class RegisterPayload(BaseModel):
     name: str = Field(min_length=2, max_length=100)
     email: EmailStr
     password: str = Field(min_length=6, max_length=128)
-    otp: str = Field(min_length=6, max_length=6)
-
-
-class SignupOtpPayload(BaseModel):
-    name: str = Field(min_length=2, max_length=100)
-    email: EmailStr
 
 
 class LoginPayload(BaseModel):
@@ -127,42 +122,6 @@ def hash_password(password: str, salt: str) -> str:
     return hashlib.sha256(f"{salt}:{password}".encode("utf-8")).hexdigest()
 
 
-def send_signup_otp_email(recipient_email: str, recipient_name: str, otp: str) -> dict:
-    smtp_email = os.getenv("SMTP_EMAIL")
-    smtp_password = os.getenv("SMTP_APP_PASSWORD")
-    smtp_host = os.getenv("SMTP_HOST", "smtp.gmail.com")
-    smtp_port = int(os.getenv("SMTP_PORT", "587"))
-
-    if not smtp_email or not smtp_password:
-        print("\n" + "="*50)
-        print(f"[*] DEVELOPMENT MODE: OTP for {recipient_email}")
-        print(f"[*] OTP CODE: {otp}")
-        print("="*50 + "\n")
-        return {"dev_otp": otp}
-
-    message = EmailMessage()
-    message["Subject"] = "Your BuyMore signup OTP"
-    message["From"] = smtp_email
-    message["To"] = recipient_email
-    message.set_content(
-        f"Hello {recipient_name},\n\n"
-        f"Your BuyMore signup OTP is: {otp}\n\n"
-        "This OTP will expire in 10 minutes.\n"
-        "If you did not request this, you can ignore this email.\n"
-    )
-
-    try:
-        with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
-            server.starttls()
-            server.login(smtp_email, smtp_password)
-            server.send_message(message)
-        return {}
-    except Exception as exc:
-        print("\n" + "="*50)
-        print(f"[*] EMAIL OTP FAILED for {recipient_email}: {exc}")
-        print(f"[*] DEVELOPMENT MODE: OTP CODE: {otp}")
-        print("="*50 + "\n")
-        return {"dev_otp": otp, "email_warning": "Email could not be sent, so this OTP is shown for development."}
 
 
 def create_session(connection: sqlite3.Connection, user_id: int) -> str:
@@ -268,17 +227,6 @@ def init_db() -> None:
             connection.execute("ALTER TABLE orders ADD COLUMN stripe_session_id TEXT")
         connection.execute(
             """
-            CREATE TABLE IF NOT EXISTS signup_otps (
-                email TEXT PRIMARY KEY,
-                name TEXT NOT NULL,
-                otp_hash TEXT NOT NULL,
-                expires_at INTEGER NOT NULL,
-                created_at TEXT NOT NULL
-            )
-            """
-        )
-        connection.execute(
-            """
             CREATE TABLE IF NOT EXISTS order_items (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 order_id INTEGER NOT NULL,
@@ -342,38 +290,6 @@ def healthcheck() -> dict:
     return {"status": "ok", "database": str(DB_PATH)}
 
 
-@app.post("/api/auth/send-signup-otp")
-def send_signup_otp(payload: SignupOtpPayload) -> dict:
-    with get_db() as connection:
-        existing = connection.execute(
-            "SELECT id FROM users WHERE email = ?",
-            (payload.email.lower(),),
-        ).fetchone()
-        if existing is not None:
-            raise HTTPException(status_code=400, detail="Email is already registered")
-
-        otp = f"{secrets.randbelow(1000000):06d}"
-        otp_hash = hashlib.sha256(otp.encode("utf-8")).hexdigest()
-        expires_at = now_timestamp() + 600
-
-        connection.execute(
-            """
-            INSERT INTO signup_otps (email, name, otp_hash, expires_at, created_at)
-            VALUES (?, ?, ?, ?, ?)
-            ON CONFLICT(email)
-            DO UPDATE SET
-                name = excluded.name,
-                otp_hash = excluded.otp_hash,
-                expires_at = excluded.expires_at,
-                created_at = excluded.created_at
-            """,
-            (payload.email.lower(), payload.name.strip(), otp_hash, expires_at, utc_now()),
-        )
-
-    dev_data = send_signup_otp_email(payload.email.lower(), payload.name.strip(), otp)
-    return {"message": "OTP sent successfully", **dev_data}
-
-
 @app.post("/api/auth/register")
 def register(payload: RegisterPayload) -> dict:
     with get_db() as connection:
@@ -383,24 +299,6 @@ def register(payload: RegisterPayload) -> dict:
         ).fetchone()
         if existing is not None:
             raise HTTPException(status_code=400, detail="Email is already registered")
-
-        otp_row = connection.execute(
-            "SELECT otp_hash, expires_at FROM signup_otps WHERE email = ?",
-            (payload.email.lower(),),
-        ).fetchone()
-        if otp_row is None:
-            raise HTTPException(status_code=400, detail="Request an OTP before signing up")
-
-        if otp_row["expires_at"] < now_timestamp():
-            connection.execute(
-                "DELETE FROM signup_otps WHERE email = ?",
-                (payload.email.lower(),),
-            )
-            raise HTTPException(status_code=400, detail="OTP expired. Please request a new one.")
-
-        provided_otp_hash = hashlib.sha256(payload.otp.encode("utf-8")).hexdigest()
-        if provided_otp_hash != otp_row["otp_hash"]:
-            raise HTTPException(status_code=400, detail="Invalid OTP")
 
         salt = secrets.token_hex(16)
         password_hash = hash_password(payload.password, salt)
@@ -417,10 +315,6 @@ def register(payload: RegisterPayload) -> dict:
             "SELECT id, name, email FROM users WHERE id = ?",
             (user_id,),
         ).fetchone()
-        connection.execute(
-            "DELETE FROM signup_otps WHERE email = ?",
-            (payload.email.lower(),),
-        )
 
     return {"token": token, "user": serialize_user(user_row)}
 
@@ -729,7 +623,7 @@ if __name__ == "__main__":
 
     uvicorn.run(
         "app:app",
-        host=os.getenv("FASTAPI_HOST", "127.0.0.1"),
-        port=int(os.getenv("FASTAPI_PORT", "8000")),
-        reload=True,
+        host=os.getenv("FASTAPI_HOST", "0.0.0.0"),
+        port=int(os.getenv("PORT", os.getenv("FASTAPI_PORT", "8000"))),
+        reload=False,
     )

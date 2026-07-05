@@ -1,12 +1,12 @@
 // Cart management
-const API_BASE_URL = window.location.protocol.startsWith('http')
-    ? window.location.origin
-    : 'http://127.0.0.1:8001';
+const configuredBackendUrl = (window.__BACKEND_URL__ || '').replace(/\/$/, '');
+const isLocalHost = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+const API_BASE_URL = configuredBackendUrl || (isLocalHost ? 'http://127.0.0.1:8000' : '');
+const USE_LOCAL_BACKEND = false;
 let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
 let totalCartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 let currentUser = JSON.parse(localStorage.getItem('currentUser')) || null;
 let authToken = localStorage.getItem('authToken') || '';
-let pendingSignupOtpEmail = '';
 const LAST_AUTH_EMAIL_KEY = 'lastAuthEmail';
 
 function isUserLoggedIn() {
@@ -53,7 +53,68 @@ function clearSession() {
     localStorage.removeItem('cartItems');
 }
 
+function getLocalData(key, defaultValue) {
+    try {
+        return JSON.parse(localStorage.getItem(key) || JSON.stringify(defaultValue));
+    } catch {
+        return defaultValue;
+    }
+}
+
+function setLocalData(key, value) {
+    localStorage.setItem(key, JSON.stringify(value));
+}
+
+function getLocalUsers() {
+    return getLocalData('local_users', []);
+}
+
+function saveLocalUsers(users) {
+    setLocalData('local_users', users);
+}
+
+function findLocalUser(email) {
+    return getLocalUsers().find(user => user.email.toLowerCase() === email.toLowerCase());
+}
+
+function getLocalCartItems(email) {
+    const carts = getLocalData('local_carts', {});
+    return carts[email.toLowerCase()] || [];
+}
+
+function saveLocalCartItems(email, items) {
+    const carts = getLocalData('local_carts', {});
+    carts[email.toLowerCase()] = items;
+    setLocalData('local_carts', carts);
+}
+
+function getLocalAddresses(email) {
+    const addresses = getLocalData('local_addresses', {});
+    return addresses[email.toLowerCase()] || [];
+}
+
+function saveLocalAddresses(email, items) {
+    const addresses = getLocalData('local_addresses', {});
+    addresses[email.toLowerCase()] = items;
+    setLocalData('local_addresses', addresses);
+}
+
+function getLocalWishlist(email) {
+    const wishlist = getLocalData('local_wishlist', {});
+    return wishlist[email.toLowerCase()] || [];
+}
+
+function saveLocalWishlist(email, items) {
+    const wishlist = getLocalData('local_wishlist', {});
+    wishlist[email.toLowerCase()] = items;
+    setLocalData('local_wishlist', wishlist);
+}
+
 async function apiRequest(path, options = {}) {
+    if (USE_LOCAL_BACKEND && path.startsWith('/api/')) {
+        return handleLocalApiRequest(path, options);
+    }
+
     const headers = {
         'Content-Type': 'application/json',
         ...(options.headers || {})
@@ -61,6 +122,10 @@ async function apiRequest(path, options = {}) {
 
     if (authToken) {
         headers.Authorization = `Bearer ${authToken}`;
+    }
+
+    if (!API_BASE_URL) {
+        throw new Error('Backend URL is not configured. Set window.__BACKEND_URL__ to your Render API URL.');
     }
 
     let response;
@@ -102,22 +167,164 @@ async function apiRequest(path, options = {}) {
     return data;
 }
 
+function handleLocalApiRequest(path, options = {}) {
+    const method = (options.method || 'GET').toUpperCase();
+    const body = options.body ? JSON.parse(options.body) : null;
+    const email = currentUser?.email?.toLowerCase();
+
+    if (path === '/api/auth/register' && method === 'POST') {
+        const { name, email: registerEmail, password } = body;
+        if (!name || !registerEmail || !password) {
+            throw new Error('Name, email, and password are required');
+        }
+        if (findLocalUser(registerEmail)) {
+            throw new Error('Email already registered');
+        }
+        const users = getLocalUsers();
+        const newUser = {
+            id: Date.now(),
+            name: name.trim(),
+            email: registerEmail.toLowerCase(),
+            password: password
+        };
+        users.push(newUser);
+        saveLocalUsers(users);
+        const token = `local-${newUser.id}-${Date.now()}`;
+        return { token, user: { id: newUser.id, name: newUser.name, email: newUser.email } };
+    }
+
+    if (path === '/api/auth/login' && method === 'POST') {
+        const { email: loginEmail, password } = body;
+        const user = findLocalUser(loginEmail);
+        if (!user || user.password !== password) {
+            throw new Error('Invalid email or password');
+        }
+        const token = `local-${user.id}-${Date.now()}`;
+        return { token, user: { id: user.id, name: user.name, email: user.email } };
+    }
+
+    if (!email) {
+        throw new Error('Unauthorized: please sign in first');
+    }
+
+    if (path === '/api/cart' && method === 'GET') {
+        return { items: getLocalCartItems(email) };
+    }
+
+    if (path === '/api/cart' && method === 'POST') {
+        const items = getLocalCartItems(email);
+        const existing = items.find(item => item.product_id === body.product_id);
+        if (existing) {
+            existing.quantity = Math.min(existing.quantity + body.quantity, 10);
+            existing.name = body.name;
+            existing.price = body.price;
+        } else {
+            items.push({
+                product_id: body.product_id,
+                name: body.name,
+                price: body.price,
+                quantity: body.quantity
+            });
+        }
+        saveLocalCartItems(email, items);
+        return { success: true };
+    }
+
+    const cartMatch = path.match(/^\/api\/cart\/(\d+)$/);
+    if (cartMatch) {
+        const productId = parseInt(cartMatch[1], 10);
+        const items = getLocalCartItems(email);
+        const idx = items.findIndex(item => item.product_id === productId);
+        if (method === 'PUT') {
+            const quantity = body.quantity;
+            if (idx === -1) {
+                throw new Error('Cart item not found');
+            }
+            if (quantity <= 0) {
+                items.splice(idx, 1);
+            } else {
+                items[idx].quantity = quantity;
+            }
+            saveLocalCartItems(email, items);
+            return { success: true };
+        }
+        if (method === 'DELETE') {
+            if (idx !== -1) {
+                items.splice(idx, 1);
+                saveLocalCartItems(email, items);
+            }
+            return { success: true };
+        }
+    }
+
+    if (path === '/api/addresses' && method === 'GET') {
+        return { addresses: getLocalAddresses(email) };
+    }
+
+    if (path === '/api/addresses' && method === 'POST') {
+        const items = getLocalAddresses(email);
+        const newAddress = {
+            id: Date.now(),
+            ...body
+        };
+        items.push(newAddress);
+        saveLocalAddresses(email, items);
+        return { success: true };
+    }
+
+    const addressMatch = path.match(/^\/api\/addresses\/(\d+)$/);
+    if (addressMatch && method === 'DELETE') {
+        const id = parseInt(addressMatch[1], 10);
+        let items = getLocalAddresses(email);
+        items = items.filter(addr => addr.id !== id);
+        saveLocalAddresses(email, items);
+        return { success: true };
+    }
+
+    if (path === '/api/wishlist' && method === 'GET') {
+        return { items: getLocalWishlist(email) };
+    }
+
+    if (path === '/api/wishlist' && method === 'POST') {
+        const items = getLocalWishlist(email);
+        if (!items.includes(body.product_id)) {
+            items.push(body.product_id);
+            saveLocalWishlist(email, items);
+        }
+        return { success: true };
+    }
+
+    const wishlistMatch = path.match(/^\/api\/wishlist\/(\d+)$/);
+    if (wishlistMatch && method === 'DELETE') {
+        const productId = parseInt(wishlistMatch[1], 10);
+        let items = getLocalWishlist(email);
+        items = items.filter(id => id !== productId);
+        saveLocalWishlist(email, items);
+        return { success: true };
+    }
+
+    if (path === '/api/orders' && method === 'GET') {
+        return { orders: [] };
+    }
+
+    if (path === '/api/checkout/create-session' && method === 'POST') {
+        saveLocalCartItems(email, []);
+        cartItems = [];
+        totalCartCount = 0;
+        saveCartToLocal();
+        return { checkout_url: 'success.html' };
+    }
+
+    throw new Error(`Unknown API route: ${path}`);
+}
+
 async function registerUser(name, email, password) {
-    const otpInput = document.getElementById("signup-otp");
-    const otp = otpInput ? otpInput.value.trim() : '';
     const data = await apiRequest('/api/auth/register', {
         method: 'POST',
-        body: JSON.stringify({ name, email, password, otp })
+        body: JSON.stringify({ name, email, password })
     });
     setSession(data);
     return data;
-}
-
-async function sendSignupOtp(name, email) {
-    return apiRequest('/api/auth/send-signup-otp', {
-        method: 'POST',
-        body: JSON.stringify({ name, email })
-    });
 }
 
 async function loginUser(email, password) {
@@ -164,61 +371,8 @@ function hideAuthModals() {
     resetSignupOtpState();
 }
 
-function ensureSignupOtpControls() {
-    const signupForm = document.getElementById("signup-form");
-    if (!signupForm || document.getElementById("signup-otp")) {
-        return;
-    }
-
-    const submitBtn = signupForm.querySelector(".signup-btn");
-    const otpInput = document.createElement("input");
-    otpInput.type = "text";
-    otpInput.id = "signup-otp";
-    otpInput.placeholder = "Enter OTP";
-    otpInput.maxLength = 6;
-    otpInput.autocomplete = "one-time-code";
-    otpInput.inputMode = "numeric";
-    otpInput.style.display = "none";
-
-    const resendBtn = document.createElement("button");
-    resendBtn.type = "button";
-    resendBtn.id = "resend-otp-btn";
-    resendBtn.className = "google-btn";
-    resendBtn.style.display = "none";
-    resendBtn.innerText = "Resend OTP";
-
-    if (submitBtn) {
-        signupForm.insertBefore(otpInput, submitBtn);
-        signupForm.insertBefore(resendBtn, submitBtn);
-        submitBtn.innerText = "Send OTP";
-    } else {
-        signupForm.appendChild(otpInput);
-        signupForm.appendChild(resendBtn);
-    }
-}
-
-ensureSignupOtpControls();
-
 function resetSignupOtpState() {
-    pendingSignupOtpEmail = '';
-    const otpInput = document.getElementById("signup-otp");
-    const resendBtn = document.getElementById("resend-otp-btn");
-    const signupBtn = document.querySelector("#signup-form .signup-btn");
-
-    if (otpInput) {
-        otpInput.value = '';
-        otpInput.style.display = 'none';
-    }
-
-    if (resendBtn) {
-        resendBtn.style.display = 'none';
-        resendBtn.disabled = false;
-    }
-
-    if (signupBtn) {
-        signupBtn.innerText = 'Send OTP';
-        signupBtn.disabled = false;
-    }
+    // No OTP state needed for normal registration flow.
 }
 
 // Handle signup form submission
@@ -228,9 +382,6 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
     const name = document.getElementById("user-name").value.trim();
     const email = document.getElementById("user-email").value.trim();
     const password = document.getElementById("user-password").value.trim();
-    const otpInput = document.getElementById("signup-otp");
-    const resendBtn = document.getElementById("resend-otp-btn");
-    const signupBtn = document.querySelector("#signup-form .signup-btn");
 
     if (!name || !email || !password) {
         alert("Please fill in all fields");
@@ -238,43 +389,9 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
     }
 
     try {
-        if (pendingSignupOtpEmail !== email) {
-            if (signupBtn) signupBtn.disabled = true;
-            const res = await sendSignupOtp(name, email);
-            pendingSignupOtpEmail = email;
-            rememberAuthEmail(email);
-
-            if (otpInput) {
-                otpInput.style.display = 'block';
-                otpInput.focus();
-            }
-
-            if (resendBtn) {
-                resendBtn.style.display = 'block';
-            }
-
-            if (signupBtn) {
-                signupBtn.innerText = 'Verify OTP & Sign Up';
-                signupBtn.disabled = false;
-            }
-
-            if (res.dev_otp) {
-                alert(`DEVELOPMENT MODE: Your OTP is ${res.dev_otp}`);
-            } else {
-                alert(`OTP sent to ${email}. Enter it to complete signup.`);
-            }
-            return;
-        }
-
-        if (!otpInput || !otpInput.value.trim()) {
-            alert("Please enter the OTP sent to your email.");
-            return;
-        }
-
         const data = await registerUser(name, email, password);
         console.log('Signup successful, currentUser:', currentUser);
         document.getElementById("signup-form").reset();
-        resetSignupOtpState();
         hideAuthModals();
         updateUserProfile();
         await loadCartFromServer();
@@ -602,34 +719,6 @@ async function loadOrders() {
     } catch(e) {
         console.error(e);
     }
-}
-
-const resendOtpBtn = document.getElementById("resend-otp-btn");
-if (resendOtpBtn) {
-    resendOtpBtn.addEventListener("click", async () => {
-        const name = document.getElementById("user-name").value.trim();
-        const email = document.getElementById("user-email").value.trim();
-
-        if (!name || !email) {
-            alert("Enter your name and email first.");
-            return;
-        }
-
-        resendOtpBtn.disabled = true;
-        try {
-            const res = await sendSignupOtp(name, email);
-            pendingSignupOtpEmail = email;
-            if (res.dev_otp) {
-                alert(`DEVELOPMENT MODE: A new OTP is ${res.dev_otp}`);
-            } else {
-                alert(`A new OTP was sent to ${email}.`);
-            }
-        } catch (error) {
-            alert(error.message);
-        } finally {
-            resendOtpBtn.disabled = false;
-        }
-    });
 }
 
 // Handle login form submission
